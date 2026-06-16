@@ -5,8 +5,8 @@ import json
 from typing import Dict, Optional, List
 from pathlib import Path
 
-import openai
 from src import ExtractedInfo, ExperimentalSetup
+from src.llm import LLMBackend, OpenAIBackend
 
 
 class LLMInformationExtractor:
@@ -45,8 +45,11 @@ Requirements:
 3. Extract accurately, do not make up information
 """
     
-    def __init__(self, api_key: str, model: str = "gpt-4o", temperature: float = 0.0):
-        self.client = openai.OpenAI(api_key=api_key)
+    def __init__(self, api_key: str, model: str = "gpt-4o", temperature: float = 0.0, llm_backend: Optional[LLMBackend] = None):
+        if llm_backend is not None:
+            self.llm = llm_backend
+        else:
+            self.llm = OpenAIBackend(api_key=api_key, default_model=model)
         self.model = model
         self.temperature = temperature
         self.system_prompt = self.DEFAULT_SYSTEM_PROMPT.strip()
@@ -54,21 +57,20 @@ Requirements:
     def extract(self, text: str) -> Optional[ExtractedInfo]:
         """Extract structured information from article text."""
         try:
-            response = self.client.chat.completions.create(
-                model=self.model,
+            response = self.llm.chat(
                 messages=[
                     {"role": "system", "content": self.system_prompt},
                     {"role": "user", "content": text}
                 ],
+                model=self.model,
                 temperature=self.temperature,
-                response_format={"type": "json_object"}
             )
             
-            content = response.choices[0].message.content
-            if not content:
+            if not response.success or not response.content:
+                print(f"Extraction error: {response.error_message}")
                 return None
             
-            data = json.loads(content)
+            data = json.loads(response.content)
             return self._parse_dict(data)
             
         except Exception as e:
