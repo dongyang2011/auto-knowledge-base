@@ -1,0 +1,55 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+.venv/
+.env/
+
+# Original PDFs - can be large, don't commit
+originals/**/*.pdf
+!originals/**/.gitkeep
+
+# Extracted files - if large, you may want to ignore
+# extracted/**/*
+# !extracted/**/.gitkeep
+
+# Database files (can be large)
+data/*.db
+data/chroma/
+data/neo4j/
+
+# Logs
+logs/*.log
+logs/*.log.*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
