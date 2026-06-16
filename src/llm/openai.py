@@ -1,4 +1,5 @@
 """OpenAI implementation of unified LLM interface."""
+import os
 import openai
 from typing import List, Optional, Dict
 
@@ -22,6 +23,9 @@ class OpenAIBackend(LLMBackend):
             default_model: Default model to use when not specified in chat call
             base_url: Optional custom base URL for API (for proxies or Azure)
         """
+        # If base_url not provided, check environment variable OPENAI_BASE_URL
+        if base_url is None:
+            base_url = os.getenv("OPENAI_BASE_URL")
         self.client = openai.OpenAI(api_key=api_key, base_url=base_url)
         self.default_model = default_model
     
