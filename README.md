@@ -31,7 +31,80 @@ auto-knowledge-base/
 
 ## 快速开始
 
-待补充...
+### 1. 安装依赖
+
+```bash
+cd auto-knowledge-base
+pip install -r requirements.txt
+# 或者使用 pyproject.toml
+pip install .
+```
+
+依赖：
+- `requests` - HTTP 请求
+- `feedparser` - RSS 解析
+- `PyMuPDF` - PDF 文本提取
+- `chromadb` - 向量存储
+- `openai` - LLM API
+- `pydantic` - 数据验证
+
+### 2. 配置环境变量
+
+复制 `.env.example` 到 `.env`:
+
+```bash
+cp .env.example .env
+```
+
+编辑 `.env`，填入你的 API Key:
+
+```
+OPENAI_API_KEY=your-openai-api-key-here
+OPENAI_MODEL=gpt-4o
+# OPENAI_BASE_URL=https://api.openai.com/v1  # 如果需要代理，修改这里
+```
+
+### 3. 运行端到端流水线
+
+搜索 arXiv 上的论文，下载 PDF，提取信息：
+
+```bash
+python run_pipeline.py --query "large language model" --limit 10
+```
+
+参数说明:
+- `--query`: 搜索关键词，会作为分类目录名
+- `--limit`: 最多处理多少篇论文
+
+### 4. 输出结果
+
+处理完成后，你会得到:
+
+- **原始 PDF**: `originals/{query}/`
+- **提取结果**: `extracted/{query}/{id}.md` (人工阅读) + `.json` (程序处理)
+- **元数据库**: `data/articles.db` - 记录每篇文章的处理状态
+
+### 5. 查看结果
+
+你可以查看提取的 Markdown 文件，格式大概是这样:
+
+```markdown
+# Attention Is All You Need
+
+## 基本信息
+- **作者**: Ashish Vaswani, ...
+- **年份**: 2017
+- **来源**: arxiv
+
+## 核心方案
+本文提出了Transformer架构...
+
+## 实验设置
+### 数据集
+- WMT 2014 English-German
+...
+```
+
 
 ## 文档
 
